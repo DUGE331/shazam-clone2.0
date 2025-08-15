@@ -3,7 +3,9 @@ import soundfile as sf
 import librosa
 import numpy as np
 
-def record_audio_loopback(output_file, duration=5, sample_rate=44100):
+def record_audio(output_file="recordings/recorded_audio.wav", duration=5, sample_rate=44100):
+    import os
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
     """Records system audio via loopback and saves to a WAV file."""
     print("Recording system audio using loopback...")
     default_speaker = sc.default_speaker()
@@ -28,3 +30,10 @@ def process_recorded_audio(file_path):
     S = np.abs(librosa.stft(y))
     S_db = librosa.amplitude_to_db(S, ref=np.max)
     return S_db, sr
+
+def load_audio(file_path, sample_rate=44100):
+    """Load audio from a file and return waveform + sample rate."""
+    import librosa
+    y, sr = librosa.load(file_path, sr=sample_rate, mono=True)
+    print(f"Loaded audio: {y.shape}, Sample rate: {sr}")
+    return y, sr
