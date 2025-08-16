@@ -1,27 +1,33 @@
-<input type="text" id="spotify-url" placeholder="Paste Spotify link here">
-<button id="add-track-btn">Add Track</button>
-<div id="status"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shazam Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Shazam Clone</h1>
+        
+        <!-- Spotify Link Input -->
+        <div class="search-bar">
+            <input type="text" id="spotify-url" placeholder="Paste Spotify track link here">
+            <button id="add-track-btn">Add Track</button>
+        </div>
 
-<script>
-document.getElementById("add-track-btn").addEventListener("click", async () => {
-    const url = document.getElementById("spotify-url").value;
-    const statusDiv = document.getElementById("status");
-    statusDiv.textContent = "Adding track...";
+        <!-- Recognize Button -->
+        <div class="recognize-section">
+            <button id="recognize-btn">🎵 Recognize Song</button>
+        </div>
 
-    try {
-        const response = await fetch("http://localhost:5000/add_spotify_track", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ spotify_url: url })
-        });
-        const result = await response.json();
-        if (result.success) {
-            statusDiv.textContent = result.message;
-        } else {
-            statusDiv.textContent = "Error: " + result.error;
-        }
-    } catch (err) {
-        statusDiv.textContent = "Request failed: " + err.message;
-    }
-});
-</script>
+        <!-- Song Info -->
+        <div id="song-info" class="song-info">
+            <p id="song-name">No song recognized yet</p>
+            <p id="song-artist"></p>
+            <audio id="song-preview" controls></audio>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
