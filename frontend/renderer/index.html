@@ -1,0 +1,27 @@
+<input type="text" id="spotify-url" placeholder="Paste Spotify link here">
+<button id="add-track-btn">Add Track</button>
+<div id="status"></div>
+
+<script>
+document.getElementById("add-track-btn").addEventListener("click", async () => {
+    const url = document.getElementById("spotify-url").value;
+    const statusDiv = document.getElementById("status");
+    statusDiv.textContent = "Adding track...";
+
+    try {
+        const response = await fetch("http://localhost:5000/add_spotify_track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ spotify_url: url })
+        });
+        const result = await response.json();
+        if (result.success) {
+            statusDiv.textContent = result.message;
+        } else {
+            statusDiv.textContent = "Error: " + result.error;
+        }
+    } catch (err) {
+        statusDiv.textContent = "Request failed: " + err.message;
+    }
+});
+</script>

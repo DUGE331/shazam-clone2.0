@@ -37,3 +37,13 @@ def load_audio(file_path, sample_rate=44100):
     y, sr = librosa.load(file_path, sr=sample_rate, mono=True)
     print(f"Loaded audio: {y.shape}, Sample rate: {sr}")
     return y, sr
+
+
+import requests
+
+def download_audio_preview(url, track_id):
+    audio_path = f"recordings/{track_id}_preview.mp3"
+    r = requests.get(url)
+    with open(audio_path, "wb") as f:
+        f.write(r.content)
+    return audio_path

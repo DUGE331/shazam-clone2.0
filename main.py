@@ -1,8 +1,8 @@
 # main.py
-from backend.audio_processing import process_recorded_audio
-from backend.fingerprinting import find_peaks, generate_fingerprints
 from backend.audio_processing import record_audio, process_recorded_audio
+from backend.fingerprinting import find_peaks, generate_fingerprints
 import pickle
+
 
 with open("fingerprint_database.pk1", "rb") as f:
     fingerprint_db = pickle.load(f)
@@ -72,7 +72,25 @@ def main():
     # Generate fingerprints from peaks
     fingerprints = generate_fingerprints(peaks, sr)
     print("Sample fingerprints:", fingerprints[:5])
+    import pickle
 
+    # Load fingerprint database
+    with open("fingerprint_database.pk1", "rb") as f:
+        fingerprint_db = pickle.load(f)
+
+    # Count matches for each track
+    matches = {}
+    for hash_val, time in fingerprints:
+        if hash_val in fingerprint_db:
+            track_name = fingerprint_db[hash_val]['track_name']  # adjust if your DB uses a different key
+            matches[track_name] = matches.get(track_name, 0) + 1
+
+    # Determine the best match
+    if matches:
+      detected_track = max(matches, key=matches.get)
+      print(f"Detected track: {detected_track} with {matches[detected_track]} matching points")
+    else:
+        print("No matching track found")
     matches = {}
 
     for hash_val, time in fingerprints:
@@ -106,3 +124,7 @@ if __name__ == "__main__":
     main()
 
 
+from backend.routes import app
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
